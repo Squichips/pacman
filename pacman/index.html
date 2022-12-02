@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+
+    <style>
+      body{
+        margin: 0;
+        padding: 0;
+      }
+      #container {
+        width: 540px;
+        height: 440px;
+        position: relative;
+        background: rgb(50, 50, 100);
+        z-index :9;
+      }
+      #animate {
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        background-image: url("pacman-iconD.png");
+        z-index: 10;
+      }
+      #fantome {
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        background-image: url("fantome.png");
+        top:400px;
+        left:500px;
+        z-index: 10;
+      }
+
+
+      .corps{
+  
+  background-image:url(/background\ 2.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  }
+      </style>
+
+    <script src="murs.js"></script>
+    <script src="fantome.js"></script>
+
+  </head>
+
+
+<body onkeypress="bougeDeLa(event);">
+  <div class="corps">
+      <div id ="container" >
+    <div id ="animate"></div>
+    <div id ="fantome"></div>
+    
+  </div>
+  </div>
+
+
+<script src="finJeu.js"></script>
+
+
+<script>
+
+var plateau=[];
+var xf=10;
+var yf=10;
+mvtf=1;
+
+     let plateau3 =[
+"###########################",
+"#.........##....##........#",
+"#.####.##.##.##.##.##.###.#",
+"#.####.##.##.##.##.##.###.#",
+"#......##....##....##.....#",
+"#.####.#####.##.#####.###.#",
+"#.####.#####.##.#####.###.#",
+"#.##.........##........##.#",
+"#.##.#################.##.#",
+"#.##.#...............#.##.#",
+"#......#############......#",
+"##.###.#############.###.##",
+"##.###......##.......###.##",
+"#..###.####.##.#####.###..#",
+"#.####.####.##.#####.####.#",
+"#.####.##.........##......#",
+"#......##.#.##.##.####.##.#",
+"#.##.####.#.##.##.####.##.#",
+"#.##......#.##.##.####.##.#",
+"#.#######.#....##......##.#",
+"#.#######.#######.#######.#",
+"#.........................#",
+"###########################"];
+
+   let plateau2 =[
+"###########################",
+"#.....#####################",
+"#.###.#####################",
+"#.###.#####################",
+"#.....#####################",
+"###########################",
+"###########################",
+"###########################",
+"###########################",
+"###########################",
+"###########################",
+"###########################",
+"###########################",
+"###########################",
+"###########################",
+"###########################",
+"###########################",
+"###########################",
+"###########################",
+"###########################",
+"###########################",
+"###########################",
+"###########################"];
+
+
+var pcx=13;
+var pcy=19;
+const elem = document.getElementById("animate");   
+    elem.style.top = (20 * pcy) + "px"; 
+    elem.style.left = (20 * pcx) + "px"; 
+
+  
+  function tabChaineVersTabTab() {
+    for (ligne of plateau3) {
+      plateau.push(Array.from(ligne));
+    }
+  }
+
+  tabChaineVersTabTab();
+  initFantome(plateau);
+
+
+
+  function avanceDroite() {
+
+    while(plateau[pcy][pcx+1]!="#") {
+      pcx = pcx+1;
+      
+      const elem = document.getElementById("animate");   
+      elem.style.top = (20 * pcy) + "px"; 
+      elem.style.left = (20 * pcx) + "px"; 
+  }
+}
+
+  function bougeDeLa(event) {
+    
+    console.log(event.which);
+    ox =pcx;
+    oy =pcy;
+    if ((event.which==100) || (event.key=="ArrowRight")){ // d = droite
+      pcx=pcx+1
+      //avanceDroite();
+      document.getElementById("animate").style.backgroundImage="url(pacman-iconD.png)";
+    }
+    else if (event.which==115) { // s = sud = en bas
+      pcy=pcy+1
+      document.getElementById("animate").style.backgroundImage="url(pacman-iconB.png)";
+    }
+    else if (event.which==122) { // z = en z'haut
+      pcy=pcy-1
+      document.getElementById("animate").style.backgroundImage="url(pacman-iconH.png)";
+    }
+    else if (event.which==113) { // q = à quauche !!!
+      pcx=pcx-1
+      document.getElementById("animate").style.backgroundImage="url(pacman-iconG.png)";
+    }
+    if (plateau[pcy][pcx]!="#") {
+      if (plateau[oy][ox]==".") {
+        plateau[oy][ox]=" ";
+        let img =document.createElement("img");
+        img.style.position="absolute";
+        img.style.top=(20*oy)+"px";
+        img.style.left=(20*ox)+"px";
+        img.src = "black.png";
+        document.getElementById("container").appendChild(img);
+      }
+      if (finJeu()) {
+        document.body.onkeypress=null;
+        let img =document.createElement("img");
+        img.style.position="absolute";
+        img.style.top="0px";
+        img.style.left="0px";
+        img.src = "andre3000.png";
+        img.style.zIndex=15;
+        img.height=440;
+        img.width=540;
+        document.getElementById("container").appendChild(img);
+        let audio1 = new Audio("music.mp3");
+        audio1.loop = true ;
+        audio1.play();
+     
+      }
+      else {
+        deplaceFantome();
+        const elem = document.getElementById("animate");   
+        elem.style.top = (20 * pcy) + "px"; 
+        elem.style.left = (20 * pcx) + "px"; 
+      }
+    }
+    else {
+    pcx=ox;
+    pcy=oy;
+    }
+    
+  }
+</script>
+
+
+
+<!-- <input type="text" onkeypress="bougeDeLa(event);"> -->
+
+
+
+<script>
+
+  initMurs();
+
+
+  let py=0;
+  for (let lg of plateau) {
+    let px=0;
+    for (let c of lg) {
+      let img =document.createElement("img");
+      img.style.position="absolute";
+    img.style.top=(20*py)+"px";
+    img.style.left=(20*px)+"px";
+    //if (c=='#') img.src = "wall.png";
+    //else 
+    if  (c=='.') {img.src = "point.png";
+    document.getElementById("container").appendChild(img)
+    };
+    px=px+1;
+    }
+    py=py+1;
+  }
+  
+  function movePac(c) {
+    const elem = document.getElementById("animate");   
+    elem.style.top = (20 * pcy) + "px"; 
+    elem.style.left = (20 * pcx) + "px"; 
+    }
+
+  
+function myMove() {
+  let id = null;
+  const elem = document.getElementById("animate");   
+  let cnt = 0;
+  let px = 0;
+  let py = 0;
+  clearInterval(id);
+  id = setInterval(frame, 300);
+  function frame() {
+    if (cnt == 10) {
+      clearInterval(id);
+    } else {
+      cnt++; 
+      omvt = 0;
+      elem.style.top = (20 * py) + "px"; 
+      elem.style.left = (20 * px) + "px"; 
+      d = Math.random()*4;
+      if (d > 3)  mvt =1; 
+      else if (d > 2)  mvt =4; 
+      else if (d > 1)  mvt =3; 
+      else  mvt =2; 
+      if (mvt + omvt == 5) mvt = omvt;
+      omvt = mvt;
+
+      if (mvt==1) {  dx = 1; dy=0; }
+      else if (mvt==4) { dx = -1; dy=0; }
+      else if (mvt==3) {  dx = 0; dy=-1; }
+      else { dx = 0; dy=1; }
+      px = px+dx; 
+      py = py+dy;
+      if (px <0) px=0;
+      if (px >= 26) px = 26;
+      if (py <0) py=0;
+      if (py >= 21) py = 21;
+    }
+  }
+}
+
+
+ 
+ </script>
+
+</body>
+</html>
+
